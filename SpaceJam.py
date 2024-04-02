@@ -1,6 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from direct.task import *
+from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from CollideObjectBase import PlacedObject
 
 import DefensePaths as defensePaths
@@ -22,6 +23,8 @@ class SpaceJam(ShowBase):
         self.Planet6 = spaceJamClasses.Planet(self.loader, "./Assets/Planets/protoPlanet.x", self.render, 'Planet6', "./Assets/Planets/Planet6.jpg", (0, -900, -1400), 700)
         self.SpaceStation1 = spaceJamClasses.SpaceStation(self.loader, "./Assets/Space Station/spaceStation.egg", self.render, 'Space Station', "./Assets/Space Station/SpaceStation1_Dif2.png", (1500, 1000, -100), 40)
         self.Hero = spaceJamClasses.Spaceship(self.loader, self.taskMgr, self.render, "./Assets/Dumbledore/Dumbledore.egg", self.render, 'Hero', "./Assets/Dumbledore/spacejet_C.png", Vec3(1000, 1200, -50), 50)
+        self.Sentinal1 = spaceJamClasses.Orbiter(self.loader, self.taskMgr, self.rootAssetFolder + "/DroneDefender/DroneDefender.obj", self.render, "Drone", 6.0, self.rootAssetFolder + "/DroneDefender/octoad1_auv.png", self.Planet5, 900, "MLB", self.Hero)
+        self.Sentinal2 = spaceJamClasses.Orbiter(self.loader, self.taskMgr, self.rootAssetFolder + "/DroneDefender/DroneDefender.obj", self.render, "Drone", 6.0, self.rootAssetFolder + "/DroneDefender/octoad1_auv.png", self.Planet2, 500, "Cloud", self.Hero)
 
         self.SetCamera()
 
@@ -37,6 +40,13 @@ class SpaceJam(ShowBase):
         self.DrawCircleXYDefense()
         self.DrawCircleXZDefense()
         self.DrawCircleYZDefense()
+        
+        self.cTrav = CollisionTraverser()
+        self.cTrav.traverse(self.render)
+        self.pusher = CollisionHandlerPusher()
+        self.pusher.addCollider(self.Hero.collisionNode, self.Hero.modelNode)
+        self.cTrav.addCollider(self.Hero.collisionNode, self.pusher)
+        self.cTrav.showCollisions(self.render)
 
     def DrawCircleXYDefense(self):
         self.parent = self.loader.loadModel('./Assets/DroneDefender/DroneDefender.obj')
