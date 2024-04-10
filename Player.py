@@ -80,3 +80,47 @@ def SetParticles(self):
     self.explodeEffect.loadConfig("./Assets/Part-fx/basic_xpld_efx.ptf")
     self.explodeEffect.setScale(20)
     self.explodeNode = self.render.attachNewNode('ExplosionEffects')
+    
+    elif strippedString == "Planet":
+    Missile.Intervals[shooter].finish()
+    self.PlanetDestroy(victim)
+    
+def PlanetDestroy(self, victim: NodePath):
+    nodeID = self.render.find(victim)
+    
+    self.taskMgr.add(self.PlanetShrink, name = "PlanetShrink", extraArgs = [nodeID], appendTask = True)
+    
+def PlanetShrink(self, nodeID: NodePath, task):
+    if task.time < 2.0:
+        if nodeID.getBounds().getRadius() > 0:
+            scaleSubtraction = 10
+            nodeID.setScale(nodeID.getScale() - scaleSubtraction)
+            temp = 30 * random.random()
+            nodeID.setH(nodeID.getH() + temp)
+            return task.cont
+        
+    else:
+        nodeID.detachNode()
+        return task.done
+    
+    elif strippedString == "Space Station":
+        Missile.Intervals[shooter].finish()
+        self.SpaceStationDestroy(victim)
+    
+def SpaceStationDestroy(self, victim: NodePath):
+    nodeID = self.render.find(victim)
+    
+    self.taskMgr.add(self.SpaceStationShrink, name = "SpaceStationShrink", extraArgs = [nodeID], appendTask = True)
+    
+def SpaceStationShrink(self, nodeID: NodePath, task):
+    if task.time < 2.0:
+        if nodeID.getBounds().getRadius() > 0:
+            scaleSubtraction = 2
+            nodeID.setScale(nodeID.getScale() - scaleSubtraction)
+            temp = 30 * random.random()
+            nodeID.setH(nodeID.getH() + temp)
+            return task.cont
+        
+    else:
+        nodeID.detachNode()
+        return task.done
